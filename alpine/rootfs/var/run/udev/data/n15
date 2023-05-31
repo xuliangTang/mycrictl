@@ -1,6 +1,0 @@
-I:3647326
-E:ID_NET_DRIVER=veth
-E:NM_UNMANAGED=1
-E:SYSTEMD_ALIAS=/sys/subsystem/net/devices/vethccd2ca5c
-E:net.ifnames=0
-G:systemd

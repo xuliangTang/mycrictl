@@ -1,6 +1,0 @@
-S:input/by-path/platform-pcspkr-event-spkr
-I:83181
-E:ID_INPUT=1
-E:ID_PATH=platform-pcspkr
-E:ID_PATH_TAG=platform-pcspkr
-E:ID_SERIAL=noserial

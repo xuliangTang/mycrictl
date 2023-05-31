@@ -1,6 +1,0 @@
-I:281925823
-E:ID_NET_DRIVER=veth
-E:NM_UNMANAGED=1
-E:SYSTEMD_ALIAS=/sys/subsystem/net/devices/vethd11064ce
-E:net.ifnames=0
-G:systemd

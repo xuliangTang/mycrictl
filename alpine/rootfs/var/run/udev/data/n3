@@ -1,6 +1,0 @@
-I:9020563
-E:ID_NET_DRIVER=bridge
-E:NM_UNMANAGED=1
-E:SYSTEMD_ALIAS=/sys/subsystem/net/devices/docker0
-E:net.ifnames=0
-G:systemd

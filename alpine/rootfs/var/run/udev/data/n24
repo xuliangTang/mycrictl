@@ -1,6 +1,0 @@
-I:5495649
-E:ID_NET_DRIVER=veth
-E:NM_UNMANAGED=1
-E:SYSTEMD_ALIAS=/sys/subsystem/net/devices/veth9e10b902
-E:net.ifnames=0
-G:systemd

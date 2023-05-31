@@ -1,6 +1,0 @@
-I:97058032978
-E:ID_NET_DRIVER=veth
-E:NM_UNMANAGED=1
-E:SYSTEMD_ALIAS=/sys/subsystem/net/devices/vethe2df070e
-E:net.ifnames=0
-G:systemd

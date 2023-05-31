@@ -1,5 +1,0 @@
-I:2541797
-E:ID_NET_DRIVER=vxlan
-E:SYSTEMD_ALIAS=/sys/subsystem/net/devices/flannel.1
-E:net.ifnames=0
-G:systemd
