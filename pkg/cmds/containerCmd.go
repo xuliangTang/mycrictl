@@ -4,9 +4,13 @@ import (
 	"context"
 	"cri/pkg/utils"
 	"fmt"
+	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
 	"k8s.io/cri-api/pkg/apis/runtime/v1alpha2"
 	"log"
+	"os"
+	"strconv"
+	"strings"
 	"time"
 )
 
@@ -58,5 +62,39 @@ var runCmd = &cobra.Command{
 		}
 
 		fmt.Println(createRsp.ContainerId)
+	},
+}
+
+var psCmd = &cobra.Command{
+	Use:   "ps",
+	Short: "List containers",
+	Run: func(cmd *cobra.Command, args []string) {
+		client := v1alpha2.NewRuntimeServiceClient(grpcClient)
+		ctx, cancel := context.WithTimeout(context.Background(), time.Second*3)
+		defer cancel()
+
+		req := &v1alpha2.ListContainersRequest{}
+		rsp, err := client.ListContainers(ctx, req)
+		if err != nil {
+			log.Fatalln(err)
+		}
+
+		// 输出表格
+		table := tablewriter.NewWriter(os.Stdout)
+		table.SetHeader([]string{"CONTAINER ID", "IMAGE", "CREATED", "STATE", "NAME", "ATTEMPT", "POD ID"})
+		for _, container := range rsp.GetContainers() {
+			containerId := container.Id[:13]
+			image := container.Image.GetImage()
+			created := utils.NsToTime(container.CreatedAt)
+			state := strings.Replace(container.State.String(), "CONTAINER_", "", -1)
+			name := container.Metadata.Name
+			attempt := container.Metadata.Attempt
+			podId := container.PodSandboxId[:13]
+
+			row := []string{containerId, image, created, state, name, strconv.Itoa(int(attempt)), podId}
+			table.Append(row)
+		}
+		utils.SetTable(table)
+		table.Render()
 	},
 }

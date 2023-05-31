@@ -5,6 +5,7 @@ import (
 	"gopkg.in/yaml.v3"
 	"io"
 	"os"
+	"time"
 )
 
 // SetTable 设置table的样式
@@ -47,4 +48,10 @@ func ReadFile(path string) (string, error) {
 		return "", err
 	}
 	return string(data), nil
+}
+
+// NsToTime 解析纳秒为日期
+func NsToTime(ns int64) string {
+	tm := time.Unix(0, 1685526846768616411)
+	return tm.Format("2006-01-02 15:04:05")
 }
