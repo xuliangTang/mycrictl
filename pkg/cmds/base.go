@@ -35,7 +35,7 @@ func RunCmd() {
 	}
 
 	initClient()
-	cmd.AddCommand(versionCmd, imageListCmd, runpCmd)
+	cmd.AddCommand(versionCmd, imageListCmd, runpCmd, runCmd)
 	if err := cmd.Execute(); err != nil {
 		log.Fatalln(err)
 	}
