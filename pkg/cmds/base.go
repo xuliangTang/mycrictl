@@ -37,7 +37,7 @@ func RunCmd() {
 
 	initClient()
 
-	execCmd.Flags().BoolVarP(&TTY, "tty", "t", false, "")
+	execCmd.Flags().BoolVarP(&TTY, "tty", "t", false, "-t")
 	cmd.AddCommand(versionCmd, imageListCmd, runpCmd, runCmd, psCmd, execCmd)
 	if err := cmd.Execute(); err != nil {
 		log.Fatalln(err)

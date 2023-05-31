@@ -4,11 +4,13 @@ import (
 	"context"
 	"cri/pkg/utils"
 	"fmt"
+	dockerterm "github.com/docker/docker/pkg/term"
 	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/remotecommand"
 	"k8s.io/cri-api/pkg/apis/runtime/v1alpha2"
+	"k8s.io/kubectl/pkg/util/term"
 	"log"
 	"net/url"
 	"os"
@@ -141,14 +143,38 @@ var execCmd = &cobra.Command{
 			log.Fatalln(err)
 		}
 
-		err = exec.Stream(remotecommand.StreamOptions{
-			Stdin:  os.Stdin,
-			Stdout: os.Stdout,
-			Stderr: os.Stderr,
-			Tty:    TTY,
-		})
-		if err != nil {
-			log.Fatalln(err)
+		if !TTY { // 非终端模式
+			err = exec.Stream(remotecommand.StreamOptions{
+				Stdin:  os.Stdin,
+				Stdout: os.Stdout,
+				Stderr: os.Stderr,
+				Tty:    false,
+			})
+			if err != nil {
+				log.Fatalln(err)
+			}
+
+		} else { // 终端模式
+			stdin, stdout, stderr := dockerterm.StdStreams()
+			streamOptions := remotecommand.StreamOptions{
+				Stdout: stdout,
+				Stderr: stderr,
+				Stdin:  stdin,
+				Tty:    true,
+			}
+
+			t := term.TTY{
+				In:  stdin,
+				Out: stdout,
+				Raw: true,
+			}
+			streamOptions.TerminalSizeQueue = t.MonitorSize(t.GetSize())
+			err = t.Safe(func() error {
+				return exec.Stream(streamOptions)
+			})
+			if err != nil {
+				log.Fatalln(err)
+			}
 		}
 	},
 }
