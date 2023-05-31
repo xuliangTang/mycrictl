@@ -6,8 +6,11 @@ import (
 	"fmt"
 	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
+	"k8s.io/client-go/rest"
+	"k8s.io/client-go/tools/remotecommand"
 	"k8s.io/cri-api/pkg/apis/runtime/v1alpha2"
 	"log"
+	"net/url"
 	"os"
 	"strconv"
 	"strings"
@@ -96,5 +99,56 @@ var psCmd = &cobra.Command{
 		}
 		utils.SetTable(table)
 		table.Render()
+	},
+}
+
+var execCmd = &cobra.Command{
+	Use:     "exec",
+	Short:   "Run a command in a running container",
+	Example: "exec containerId sh -t",
+	Run: func(cmd *cobra.Command, args []string) {
+		if len(args) < 2 {
+			log.Fatalln("参数错误")
+		}
+
+		containerId, command := args[0], args[1:]
+
+		client := v1alpha2.NewRuntimeServiceClient(grpcClient)
+		ctx, cancel := context.WithTimeout(context.Background(), time.Second*3)
+		defer cancel()
+
+		req := &v1alpha2.ExecRequest{
+			ContainerId: containerId,
+			Cmd:         command,
+			Tty:         TTY,
+			Stdin:       true,
+			Stdout:      true,
+			Stderr:      !TTY,
+		}
+		rsp, err := client.Exec(ctx, req)
+		if err != nil {
+			log.Fatalln(err)
+		}
+
+		URL, err := url.Parse(rsp.Url)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		exec, err := remotecommand.NewSPDYExecutor(&rest.Config{
+			TLSClientConfig: rest.TLSClientConfig{Insecure: true},
+		}, "POST", URL)
+		if err != nil {
+			log.Fatalln(err)
+		}
+
+		err = exec.Stream(remotecommand.StreamOptions{
+			Stdin:  os.Stdin,
+			Stdout: os.Stdout,
+			Stderr: os.Stderr,
+			Tty:    TTY,
+		})
+		if err != nil {
+			log.Fatalln(err)
+		}
 	},
 }

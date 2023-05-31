@@ -12,6 +12,7 @@ import (
 const criAddr = "unix:///run/containerd/containerd.sock"
 
 var grpcClient *grpc.ClientConn
+var TTY bool
 
 func initClient() {
 	gopts := []grpc.DialOption{
@@ -35,7 +36,9 @@ func RunCmd() {
 	}
 
 	initClient()
-	cmd.AddCommand(versionCmd, imageListCmd, runpCmd, runCmd, psCmd)
+
+	execCmd.Flags().BoolVarP(&TTY, "tty", "t", false, "")
+	cmd.AddCommand(versionCmd, imageListCmd, runpCmd, runCmd, psCmd, execCmd)
 	if err := cmd.Execute(); err != nil {
 		log.Fatalln(err)
 	}

@@ -20,4 +20,5 @@ require (
 	golang.org/x/text v0.9.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20230526203410-71b5a4ffd15e // indirect
 	google.golang.org/protobuf v1.30.0 // indirect
+	k8s.io/client-go v0.22.0 // indirect
 )
