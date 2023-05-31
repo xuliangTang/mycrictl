@@ -1,0 +1,6 @@
+I:97424634371
+E:ID_NET_DRIVER=veth
+E:NM_UNMANAGED=1
+E:SYSTEMD_ALIAS=/sys/subsystem/net/devices/vetha9148c1c
+E:net.ifnames=0
+G:systemd

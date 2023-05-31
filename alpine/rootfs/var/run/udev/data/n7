@@ -1,0 +1,5 @@
+I:3255148
+E:ID_NET_DRIVER=bridge
+E:SYSTEMD_ALIAS=/sys/subsystem/net/devices/cni0
+E:net.ifnames=0
+G:systemd
